@@ -103,21 +103,39 @@ const getMeta = document =>
     return acc
   }, {})
 
-module.exports = ({ url, headers, html, external }) => {
+module.exports = ({ url, headers, html, external, validate }) => {
   /*
     If user provided optional external package (their own technologies.json expansion)
     The following script checks the validity of this expansion and throws an error if 
     file does not match schema.
   */
   if (external !== undefined && external !== null) {
+
+    if( validate === undefined || validate === null){
+      validate = true;
+    } else {
+      validate = validate;
+    }
+
+
     addNewCategories(external)
 
     addNewTechnologies(external)
 
+    /* console.log("new_tech: ")
+    console.log(new_tech) */
+
     const v = new Validator()
     const schemaToTestAgainst = schema
-    const isValid = v.validate(new_tech, schemaToTestAgainst)
-    if (isValid !== undefined && isValid !== null) {
+
+    let isValid;
+    if(validate){
+      isValid = v.validate(new_tech, schemaToTestAgainst);d
+    } else {
+      isValid = true;
+    }
+    
+    if (isValid !== undefined && isValid !== null && isValid !== true) {
       if (isValid.errors.length > 0) {
         console.log(isValid.errors)
         return 'External pacakge validation failed - please adhere to schema.json.'
@@ -125,7 +143,12 @@ module.exports = ({ url, headers, html, external }) => {
         wappalyzer.setTechnologies(new_tech.technologies)
         wappalyzer.setCategories(new_tech.categories)
       }
+    } else { //override
+      wappalyzer.setTechnologies(new_tech.technologies)
+      wappalyzer.setCategories(new_tech.categories)
     }
+
+
   } else {
     wappalyzer.setTechnologies(technologies)
     wappalyzer.setCategories(categories)
