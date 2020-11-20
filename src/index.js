@@ -130,7 +130,7 @@ module.exports = ({ url, headers, html, external, validate }) => {
 
     let isValid;
     if(validate){
-      isValid = v.validate(new_tech, schemaToTestAgainst);d
+      isValid = v.validate(new_tech, schemaToTestAgainst);
     } else {
       isValid = true;
     }
